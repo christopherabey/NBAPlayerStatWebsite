@@ -1,5 +1,5 @@
 import Footer from './Footer';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import {compdict} from './dictionaries/computerdictionary';
 import {phonedict} from './dictionaries/phonedictionary';
@@ -82,7 +82,7 @@ function App() {
     }
 
     try {
-      fetch('https://hoop-stats.herokuapp.com/', {
+      fetch('http://localhost:8000/', {
         method: 'post',
         headers: {
           'Content-Type': 'application/json'
@@ -152,13 +152,67 @@ function App() {
     setName('');
 
   }
+
+  useEffect(()=> {
+    // var xhr = new XMLHttpRequest();
+
+    // console.log("useEffect");
+
+    // xhr.open('post', "http://localhost:8000/playlist.txt", true);
+
+    // xhr.setRequestHeader('Content-Type', 'text/plain');
+
+    // console.log(xhr.readyState);
+
+    // xhr.onreadystatechange = function () {
+      
+    //   if (xhr.readyState === 4){
+    //     if(xhr.status === 200){
+    //       console.log("JSON message");
+    //       console.log(JSON.parse(xhr.responseText));
+    //     } else if (xhr.status === 404) {
+    //       console.log("File not found.");
+    //     }
+    //   }
+    // }
+
+    // xhr.send({"name" : "lebron james"});
+
+    try {
+      fetch('http://localhost:8000/playlist.txt', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json'
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: JSON.stringify({"name": name}),
+        mode:'cors'})
+        .then(response => response.json())
+        .then(data => {
+          data.forEach((results) => {
+            let listItem = document.createElement("li");
+            listItem.classList.add("list-items");
+            listItem.style.cursor = "pointer";
+            listItem.setAttribute("onclick", "displayNames('" + results + "')")
+          })
+        })
+      
+    }
+    catch (e) {
+      console.log(e)
+    }
+  }, [name])
+
+  function displayNames (value){
+    document.getElementsByName("name1").value = value;
+  }
   
   return (
     <div className="App">
       <header className="App-header" style={backStyle}>
 
         <form action="http://localhost:8000/" method="post" onSubmit={handleSubmit}>
-          <input spellcheck="false" name="name1" value={name}  onChange={handleChange} type="search" placeholder="Search for NBA Players"></input>
+          <input autoComplete="off" spellCheck="false" name="name1" value={name}  onChange={handleChange} type="search" placeholder="Search for NBA Players"></input>
         </form>
 
         <h1>{headingText} Statistics</h1>

@@ -1,11 +1,13 @@
 const PORT = process.env.PORT || 8000;
 const fetch = (...args) =>
-  import('node-fetch').then(({ default: fetch }) => fetch(...args));
+import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const cheerio = require('cheerio');
 const express = require("express");
 const app = express();
 const cors = require("cors");
 const bodyParser = require('body-parser');
+var fs = require('fs');
+const { text } = require('body-parser');
 
 app.use(cors());
 // support parsing of application/json type post data
@@ -23,14 +25,49 @@ app.get("/", (req, res) => {
 
     console.log("made a get request");
     res.send("hi there");
-
     
 })
 
-app.post("/", function(req, res){
-    // console.log("hi");
-    // res.send(req.body);
+app.get("/playlist.txt", (req, res) => {
+    console.log("get request to playlist.txt");
+    res.send("Collicutt");
+} )
+
+app.post("/playlist.txt", function(req,res){
     console.log(req.body.name);
+
+    var textByLine;
+    let playerSuggestions = [];
+    var regex = new RegExp("^" + req.body.name);
+
+    fs.readFile("./playlist.txt", function(text){
+        text = fs.readFileSync("./playlist.txt").toString('utf-8');
+        textByLine = text.split('\n')
+        // console.log(textByLine);
+
+        for(var i = 0; i< textByLine.length; i++){
+            //regex check if true, add to an array, once array hits 5 return
+            if(regex.test(textByLine[i])){
+                console.log("adding to the array")
+                playerSuggestions.push(textByLine[i]);
+                // console.log(playerSuggestions);
+            }
+
+            if(playerSuggestions.length > 4){
+                break;
+            }
+    }
+
+    console.log(playerSuggestions);
+    res.send(playerSuggestions);
+    });
+
+    // console.log("this is the array" + playerSuggestions);
+
+    
+});
+
+app.post("/", function(req, res){
 
     const getPlayerStats = async (id) => {
     
@@ -58,15 +95,12 @@ app.post("/", function(req, res){
                 })
                 statList.push(season);
             });
-    
-            // console.log(statList);
+  
             res.json(statList);
-        
-            return statList;
         
     }
     
-    getPlayerStats(req.body.name + "01");
+    getPlayerStats(req.body.name + '01');
 })
 
 app.listen(PORT, () => {
