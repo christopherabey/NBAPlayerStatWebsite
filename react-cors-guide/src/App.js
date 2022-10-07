@@ -164,13 +164,13 @@ function App() {
     <div className="App">
       <header className="App-header" style={backStyle}>
 
-        <form action="/" method="post" onSubmit={handleSubmit}>
+        {/* <form action="/" method="post" onSubmit={handleSubmit}>
           <input autocomplete="off" spellcheck="false" name="name1" value={name}  onChange={handleChange} type="search" placeholder="Search for NBA Players"></input>
-        </form>
+        </form> */}
 
         <h1>{headingText} Statistics</h1>
 
-        {loading ? <h2>Loading...</h2>: (
+        {/* {loading ? <h2>Loading...</h2>: (
         <><p>
           Welcome to the statistics of the National Basketball Association.
         </p>
@@ -181,7 +181,9 @@ function App() {
         <h2>Career rebounds: {totRebounds}</h2>
         <h2>Career points per game: {ppg}</h2>
         <h2>Career threes made: {totThree}</h2>
-      </div></>)}
+      </div></>)} */}
+
+      <p>HoopStats is currently under maintenance. Please check back later!</p>
  
       </header>
 
